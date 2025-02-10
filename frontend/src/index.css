@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #5f6fff;
+  --color-primary: #68bbe3;
 }
 
 .active hr {

@@ -13,7 +13,7 @@ const Navbar = () => {
       <img
         onClick={() => navigate("/")}
         src={assets.logo}
-        className="w-15 cursor-pointer"
+        className="w-10 cursor-pointer"
         alt=""
       />
       <ul className="md:flex hidden items-start gap-5 font-medium">
