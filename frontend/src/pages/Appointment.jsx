@@ -5,9 +5,12 @@ import { assets } from "../assets/assets";
 
 const Appointment = () => {
   const { docId } = useParams();
-  const { doctors } = useContext(AppContext);
+  const { doctors, currencySymbol } = useContext(AppContext);
 
   const [docInfo, setDocInfo] = useState(null);
+  const [docSlots, setDocSlots] = useState([]);
+  const [slotIndex, setSlotIndex] = useState(0);
+  const [slotTime, setSlotTime] = useState("");
 
   const fetchDocInfo = async () => {
     const docInfo = doctors.find((doc) => doc._id === docId);
@@ -15,9 +18,42 @@ const Appointment = () => {
     console.log(docInfo);
   };
 
+  const getAvailableSlots = async () => {
+    setDocSlots([]);
+
+    //get the current date
+    let today = new Date();
+
+    //get comming days slots starting from the today to handle a full week
+    for (let i = 0; i < 7; i++) {
+      let currentDate = new Date(today);
+      currentDate.setDate(today.getDate() + 1);
+
+      //same for the endtime
+      let endTime = new Date();
+      endTime.setDate(today.getDate() + 1);
+      endTime.setHours(21, 0, 0, 0);
+
+      //setting hours slots
+      if (today.getDate() === currentDate.getDate()) {
+        currentDate.setHours(
+          currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10
+        );
+        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
+      } else {
+        currentDate.setHours(10);
+        currentDate.setMinutes(0);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchDocInfo();
   }, [doctors, docId]);
+
+  useEffect(() => {
+    getAvailableSlots();
+  }, [docInfo]);
 
   return (
     docInfo && (
@@ -34,7 +70,6 @@ const Appointment = () => {
 
           <div className="flex-1 border border-[#ADADAD] rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
             {/* ----- Doc Info : name, degree, experience ----- */}
-
             <p className="flex items-center gap-2 text-3xl font-medium text-gray-700">
               {docInfo.name}{" "}
             </p>
@@ -46,7 +81,6 @@ const Appointment = () => {
                 {docInfo.experience}
               </button>
             </div>
-
             {/* ----- Doc About ----- */}
             <div>
               <p className="flex items-center gap-1 text-sm font-medium text-[#262626] mt-3">
@@ -56,6 +90,13 @@ const Appointment = () => {
                 {docInfo.about}
               </p>
             </div>
+            <p className="text-gray-600 font-medium mt-4">
+              Appointment fee:{" "}
+              <span className="text-gray-800">
+                {currencySymbol}
+                {docInfo.fees}
+              </span>{" "}
+            </p>
           </div>
         </div>
       </div>
