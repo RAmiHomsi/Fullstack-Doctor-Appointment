@@ -3,3 +3,7 @@
 @theme {
   --color-primary: #68bbe3;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
