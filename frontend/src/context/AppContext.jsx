@@ -29,9 +29,33 @@ const AppContextProvider = (props) => {
     }
   };
 
+  // Getting User Profile using API
+  const loadUserProfileData = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + "/api/user/get-profile", {
+        headers: { token },
+      });
+
+      if (data.success) {
+        setUserData(data.userData);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     getDoctosData();
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      loadUserProfileData();
+    }
+  }, [token]);
 
   const value = {
     doctors,
@@ -42,6 +66,7 @@ const AppContextProvider = (props) => {
     setToken,
     userData,
     setUserData,
+    loadUserProfileData,
   };
 
   return (
